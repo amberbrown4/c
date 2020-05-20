@@ -1,6 +1,6 @@
 import codecs
 requests_line = []
-with codecs.open("0.trace","r","UTF8") as inputFile:
+with codecs.open("2.trace","r","UTF8") as inputFile:
     inputFile = inputFile.readlines()
 
 main_information = inputFile[0].rstrip().split(" - ")
