@@ -100,47 +100,6 @@ class Cache_Set(LinkedList):
             current = current.next
         return None
 
-# class Cache(LinkedList):
-#     def __init__(self,number_of_sets):
-#         super().__init__()
-#         self.number_of_sets = number_of_sets
-#         # if self.head is None:
-#         firtSet = Cache_Set(0)
-#         block = Block(0, 2)
-#         firtSet.AddNodeToEnd(block)
-#         firtSet.Print()
-#         self.head = firtSet
-#         self.tail = firtSet
-#         for i in range(1,self.number_of_sets):
-#             new_set = Cache_Set(i)
-#             block = Block(i, 2)
-#             new_set.AddNodeToEnd(block)
-#             self.tail.next = new_set
-#             new_set.previous = self.tail
-#             self.tail = new_set
-#                 # newNode.previous = None
-#                 # sizeOfSecondList += 1
-#                 # return
-#             # else:
-#             #     self.tail.next = newNode
-#             #     newNode.previous = self.tail
-#             #     self.tail = newNode
-#         # for i in range(self.number_of_sets):
-#         #     cache_set = Cache_Set()
-#         #     block = Block(i,2)
-#         #     cache_set.AddNodeToEnd(block)
-#         #     self.AddNodeToEnd(cache_set)
-#
-#     def print_cache(self):
-#         current = self.head
-#         # print(current is None)
-#         while current != Node:
-#             if current is not None:
-#                 current.Print()
-#                 print()
-#                 current = current.next
-#             else:
-#                 print("goh")
 # number_of_sets = int((input.unified_size/input.block_size)/input.associativity)
 def create_cache(number_of_sets):
     Cache = []
