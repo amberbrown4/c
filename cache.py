@@ -68,7 +68,7 @@ class LinkedList:
     def Print(self):
         p = self.head
         while p != None:
-            print(p.address,end=" ")
+            print(p.address,p.tag)
             p = p.next
     def ReversePrint(self):
         p = self.tail
@@ -77,9 +77,11 @@ class LinkedList:
             p = p.previous
 
 class Cache_Set(LinkedList):
-    def __init__(self):
-        super.__init__()
+    def __init__(self,number):
+        super().__init__()
         self.next = None
+        self.previous = None
+        self.number = number
     def DeleteBlock(self,address,tag):
 
         if self.head == None:
@@ -98,34 +100,56 @@ class Cache_Set(LinkedList):
             current = current.next
         return None
 
-class Cache(LinkedList):
-    def __init__(self,number_of_sets):
-        super().__init__()
-        self.number_of_sets = number_of_sets
-        if self.head is None:
-            firtSet = Cache_Set
-            self.head = firtSet
-            self.tail = firtSet
-                # newNode.previous = None
-                # sizeOfSecondList += 1
-                # return
-            # else:
-            #     self.tail.next = newNode
-            #     newNode.previous = self.tail
-            #     self.tail = newNode
-        # for i in range(self.number_of_sets):
-        #     cache_set = Cache_Set()
-        #     block = Block(i,2)
-        #     cache_set.AddNodeToEnd(block)
-        #     self.AddNodeToEnd(cache_set)
-
-    def print_cache(self):
-        current = self.head
-        while current != Node:
-            current.Print()
-            print()
-            current = current.next
+# class Cache(LinkedList):
+#     def __init__(self,number_of_sets):
+#         super().__init__()
+#         self.number_of_sets = number_of_sets
+#         # if self.head is None:
+#         firtSet = Cache_Set(0)
+#         block = Block(0, 2)
+#         firtSet.AddNodeToEnd(block)
+#         firtSet.Print()
+#         self.head = firtSet
+#         self.tail = firtSet
+#         for i in range(1,self.number_of_sets):
+#             new_set = Cache_Set(i)
+#             block = Block(i, 2)
+#             new_set.AddNodeToEnd(block)
+#             self.tail.next = new_set
+#             new_set.previous = self.tail
+#             self.tail = new_set
+#                 # newNode.previous = None
+#                 # sizeOfSecondList += 1
+#                 # return
+#             # else:
+#             #     self.tail.next = newNode
+#             #     newNode.previous = self.tail
+#             #     self.tail = newNode
+#         # for i in range(self.number_of_sets):
+#         #     cache_set = Cache_Set()
+#         #     block = Block(i,2)
+#         #     cache_set.AddNodeToEnd(block)
+#         #     self.AddNodeToEnd(cache_set)
+#
+#     def print_cache(self):
+#         current = self.head
+#         # print(current is None)
+#         while current != Node:
+#             if current is not None:
+#                 current.Print()
+#                 print()
+#                 current = current.next
+#             else:
+#                 print("goh")
 # number_of_sets = int((input.unified_size/input.block_size)/input.associativity)
-# cachee = Cache(5)
-# cachee.print_cache()
-
+def create_cache(number_of_sets):
+    Cache = []
+    for i in range(number_of_sets):
+        new_set = Cache_Set(i)
+        block = Block(i, 2)
+        new_set.AddNodeToEnd(block)
+        Cache.append(new_set)
+    return Cache
+Cache = create_cache(5)
+for a in Cache:
+    a.Print()
