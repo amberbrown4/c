@@ -18,6 +18,9 @@ else:
     data_cache_size = int(cache_size[1])
 for line in inputFile[2:]:
     request = line.rstrip().split()[:2]
+
+    # convert from base 16 to 10
+    request[1] = int(request[1],16)
     requests_line.append(request)
 print(main_information)
 print(requests_line)

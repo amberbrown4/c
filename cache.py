@@ -146,32 +146,48 @@ def apply_LRU(cache_set,block):
     cache_set.AddBlockToEnd(block)
 
 def answer_requests():
+    if input.unified_or_separated == "0":
+        number_of_misses = answer_requests_unified()
+        return number_of_misses
+
+def answer_requests_unified():
+
     number_of_misses = 0
+
     for request in input.requests_line:
-        address_in_cache = int(int(request[1])/input.block_size)
-        set_number = int(address_in_cache % number_of_sets)
-        tag = int(math.floor(address_in_cache/ number_of_sets))
-        target_set = Cache[set_number]
-        valid = target_set.is_empty()
-        if valid == False:
-             number_of_misses = number_of_misses + 1
-             new_block = Block(address_in_cache,tag)
-             target_set.AddBlockToEnd(new_block)
-             # print("1")
-        else:
-            # print("2")
-            is_in_set = target_set.is_in_set(address_in_cache,tag)
-            if is_in_set == True:
-                block = Block(address_in_cache, tag)
-                apply_LRU(target_set,block)
-            else:
-                # print("3")
-                number_of_misses += 1
-                new_block = Block(address_in_cache, tag)
-                target_set.AddBlockToEnd(new_block)
-        # target_set.Print()
-        # print("******")
+        if request[0] == '0':
+            number_of_misses += load_data(request)
+        if request[0] == '1':
+            number_of_misses += store_data(request)
     return number_of_misses
+
+def load_data(request):
+
+    number_of_misses = 0
+    address_in_cache = int(int(request[1]) / input.block_size)
+    set_number = int(address_in_cache % number_of_sets)
+    tag = int(math.floor(address_in_cache / number_of_sets))
+    target_set = Cache[set_number]
+    valid = target_set.is_empty()
+    if valid == False:
+        number_of_misses = number_of_misses + 1
+        new_block = Block(address_in_cache, tag)
+        target_set.AddBlockToEnd(new_block)
+    else:
+        is_in_set = target_set.is_in_set(address_in_cache, tag)
+        if is_in_set == True:
+            block = Block(address_in_cache, tag)
+            apply_LRU(target_set, block)
+        else:
+            number_of_misses += 1
+            new_block = Block(address_in_cache, tag)
+            target_set.AddBlockToEnd(new_block)
+    # target_set.Print()
+    # print("******")
+    return number_of_misses
+
+def store_data(request):
+    pass
 
 number_of_sets = int((input.unified_size/input.block_size)/input.associativity)
 
@@ -180,3 +196,7 @@ for a in Cache:
     a.Print()
 number_of_misses = answer_requests()
 print(number_of_misses)
+# print("***CACHE SETTINGS***")
+# print("Unified I- D-cache")
+# print("Size: {}".format(input.unified_size))
+# print("Block size: {}".format())
