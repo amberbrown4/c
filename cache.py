@@ -135,26 +135,33 @@ def create_cache(number_of_sets):
         Cache.append(new_set)
     return Cache
 
+def apply_LRU(cache_set,block):
+    cache_set.DeleteBlock(block.address,block.tag)
+    cache_set.AddBlockToEnd(block)
+
 def answer_requests():
     number_of_misses = 0
     for request in input.requests_line:
         address_in_cache = int(int(request[1])/input.block_size)
         set_number = int(address_in_cache % number_of_sets)
         tag = int(math.floor(address_in_cache/ number_of_sets))
-        valid = Cache[set_number].is_empty()
+        target_set = Cache[set_number]
+        valid = target_set.is_empty()
         if valid == False:
              number_of_misses = number_of_misses + 1
              new_block = Block(address_in_cache,tag)
-             Cache[set_number].AddBlockToEnd(new_block)
+             target_set.AddBlockToEnd(new_block)
         else:
-            is_in_set = Cache[set_number].is_in_set(address_in_cache,tag)
+            is_in_set = target_set.is_in_set(address_in_cache,tag)
             if is_in_set == True:
-                pass
+                block = Block(address_in_cache, tag)
+                apply_LRU(target_set,block)
             else:
                 number_of_misses += 1
                 new_block = Block(address_in_cache, tag)
-                Cache[set_number].AddBlockToEnd(new_block)
+                target_set.AddBlockToEnd(new_block)
     return number_of_misses
+
 number_of_sets = int((input.unified_size/input.block_size)/input.associativity)
 
 Cache = create_cache(number_of_sets)
