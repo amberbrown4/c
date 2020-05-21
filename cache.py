@@ -74,6 +74,8 @@ class Cache_Set(LinkedList):
 
     def DeleteBlock(self,address,tag):
 
+        self.occupied_size -= 1
+
         if self.head == None:
             return
         current = self.head
@@ -111,6 +113,7 @@ class Cache_Set(LinkedList):
             self.tail = block
             block.previous = None
             self.occupied_size += 1
+            # print("one")
             return
 
         elif self.occupied_size < input.associativity:
@@ -118,12 +121,15 @@ class Cache_Set(LinkedList):
             block.previous = self.tail
             self.tail = block
             self.occupied_size += 1
+            # print("two")
             return
         else:
             self.DeleteAtStart()
             self.tail.next = block
             block.previous = self.tail
             self.tail = block
+            # print(self.occupied_size)
+            # print("three")
             return
 
 def create_cache(number_of_sets):
@@ -151,15 +157,20 @@ def answer_requests():
              number_of_misses = number_of_misses + 1
              new_block = Block(address_in_cache,tag)
              target_set.AddBlockToEnd(new_block)
+             # print("1")
         else:
+            # print("2")
             is_in_set = target_set.is_in_set(address_in_cache,tag)
             if is_in_set == True:
                 block = Block(address_in_cache, tag)
                 apply_LRU(target_set,block)
             else:
+                # print("3")
                 number_of_misses += 1
                 new_block = Block(address_in_cache, tag)
                 target_set.AddBlockToEnd(new_block)
+        # target_set.Print()
+        # print("******")
     return number_of_misses
 
 number_of_sets = int((input.unified_size/input.block_size)/input.associativity)
