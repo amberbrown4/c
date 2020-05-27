@@ -1,4 +1,4 @@
-import myinput,math
+import math
 
 # **************************** read input **********************
 main_information = input()
@@ -18,10 +18,12 @@ else:
 
 requests_line = []
 request = 'f'
-while( request != ''):
+while(True):
     request = input().split()[:2]
-
+    if len(request) == 0:
+        break
     # convert from base 16 to 10
+    # print(request)
     request[1] = int(request[1], 16)
     requests_line.append(request)
 
@@ -142,7 +144,7 @@ class Cache_Set(LinkedList):
             # print("one")
             return
 
-        elif self.occupied_size < myinput.associativity:
+        elif self.occupied_size < associativity:
             self.tail.next = block
             block.previous = self.tail
             self.tail = block
@@ -172,7 +174,7 @@ def apply_LRU(cache_set,block):
     cache_set.AddBlockToEnd(block)
 
 def answer_requests():
-    if myinput.unified_or_separated == "0":
+    if unified_or_separated == "0":
         number_of_misses = answer_requests_unified()
         return number_of_misses
 
@@ -180,7 +182,7 @@ def answer_requests_unified():
 
     number_of_misses = 0
 
-    for request in myinput.requests_line:
+    for request in requests_line:
         if request[0] == '0':
             number_of_misses += load_data(request)
         if request[0] == '1':
@@ -190,7 +192,7 @@ def answer_requests_unified():
 def load_data(request):
 
     number_of_misses = 0
-    address_in_cache = int(int(request[1]) / myinput.block_size)
+    address_in_cache = int(int(request[1]) / block_size)
     set_number = int(address_in_cache % number_of_sets)
     tag = int(math.floor(address_in_cache / number_of_sets))
     target_set = Cache[set_number]
@@ -215,16 +217,16 @@ def load_data(request):
 def store_data(request):
     pass
 
-number_of_sets = int((myinput.unified_size / myinput.block_size) / myinput.associativity)
+number_of_sets = int((unified_size / block_size) / associativity)
 
 Cache = create_cache(number_of_sets)
-for a in Cache:
-    a.Print()
+# for a in Cache:
+#     a.Print()
 number_of_misses = answer_requests()
-print(number_of_misses)
+# print(number_of_misses)
 print("***CACHE SETTINGS***")
 print("Unified I- D-cache")
-print("Size: {}".format(input.unified_size))
+print("Size: {}".format(unified_size))
 print("Associativity: {}".format(associativity))
 print("Block size: {}".format(block_size))
 if write_policy == 'wb':
@@ -243,8 +245,8 @@ print("misses: 0")
 print("miss rate: 0.0000 (hit rate 0.0000)")
 print("replace: 0")
 print("DATA")
-print("accesses: ".format(len(requests_line)))
-print("misses: ".format(number_of_misses))
+print("accesses: {}".format(len(requests_line)))
+print("misses: {}".format(number_of_misses))
 miss_rate = format(round(number_of_misses/len(requests_line) , 4 ) , '.4f')
 hit_rate = format(round(1 - number_of_misses/len(requests_line) , 4 ) , '.4f')
 print("miss rate: {} (hit rate {})".format( miss_rate , hit_rate ))
