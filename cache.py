@@ -1,29 +1,29 @@
 import myinput,math
 
 # **************************** read input **********************
-main_information = input()
-main_information = main_information.split(" - ")
-block_size = int(main_information[0])
-unified_or_separated = main_information[1]
-associativity = int(main_information[2])
-write_policy = main_information[3]
-write_miss_policy = main_information[4]
-# print(block_size)
-if unified_or_separated == '0':
-    unified_size = int(input().rstrip())
-else:
-    cache_size = input().rstrip().split(" - ")
-    instruction_cache_size = int(cache_size[0])
-    data_cache_size = int(cache_size[1])
-
-requests_line = []
-request = 'f'
-while( request != ''):
-    request = input().split()[:2]
-
-    # convert from base 16 to 10
-    request[1] = int(request[1], 16)
-    requests_line.append(request)
+# main_information = input()
+# main_information = main_information.split(" - ")
+# block_size = int(main_information[0])
+# unified_or_separated = main_information[1]
+# associativity = int(main_information[2])
+# write_policy = main_information[3]
+# write_miss_policy = main_information[4]
+# # print(block_size)
+# if unified_or_separated == '0':
+#     unified_size = int(input().rstrip())
+# else:
+#     cache_size = input().rstrip().split(" - ")
+#     instruction_cache_size = int(cache_size[0])
+#     data_cache_size = int(cache_size[1])
+#
+# requests_line = []
+# request = 'f'
+# while( request != ''):
+#     request = input().split()[:2]
+#
+#     # convert from base 16 to 10
+#     request[1] = int(request[1], 16)
+#     requests_line.append(request)
 
 class Node:
     def __init__(self):
@@ -222,34 +222,34 @@ for a in Cache:
     a.Print()
 number_of_misses = answer_requests()
 print(number_of_misses)
-print("***CACHE SETTINGS***")
-print("Unified I- D-cache")
-print("Size: {}".format(input.unified_size))
-print("Associativity: {}".format(associativity))
-print("Block size: {}".format(block_size))
-if write_policy == 'wb':
-    print("Write policy: WRITE BACK")
-else:
-    print("Write policy: WRITE THROUGH")
-if write_miss_policy == 'wa':
-    print("Allocation policy: WRITE ALLOCATE")
-else:
-    print("Allocation policy: WRITE NO ALLOCATE")
-print()
-print("***CACHE STATISTICS***")
-print("INSTRUCTIONS")
-print("accesses: 0")
-print("misses: 0")
-print("miss rate: 0.0000 (hit rate 0.0000)")
-print("replace: 0")
-print("DATA")
-print("accesses: ".format(len(requests_line)))
-print("misses: ".format(number_of_misses))
-miss_rate = format(round(number_of_misses/len(requests_line) , 4 ) , '.4f')
-hit_rate = format(round(1 - number_of_misses/len(requests_line) , 4 ) , '.4f')
-print("miss rate: {} (hit rate {})".format( miss_rate , hit_rate ))
-print("replace: 0")
-print("TRAFFIC (in words)")
-print("demand fetch: {}".format(int( (block_size*number_of_misses)/(4) )))
-print("copies back: 0")
-
+# print("***CACHE SETTINGS***")
+# print("Unified I- D-cache")
+# print("Size: {}".format(input.unified_size))
+# print("Associativity: {}".format(associativity))
+# print("Block size: {}".format(block_size))
+# if write_policy == 'wb':
+#     print("Write policy: WRITE BACK")
+# else:
+#     print("Write policy: WRITE THROUGH")
+# if write_miss_policy == 'wa':
+#     print("Allocation policy: WRITE ALLOCATE")
+# else:
+#     print("Allocation policy: WRITE NO ALLOCATE")
+# print()
+# print("***CACHE STATISTICS***")
+# print("INSTRUCTIONS")
+# print("accesses: 0")
+# print("misses: 0")
+# print("miss rate: 0.0000 (hit rate 0.0000)")
+# print("replace: 0")
+# print("DATA")
+# print("accesses: ".format(len(requests_line)))
+# print("misses: ".format(number_of_misses))
+# miss_rate = format(round(number_of_misses/len(requests_line) , 4 ) , '.4f')
+# hit_rate = format(round(1 - number_of_misses/len(requests_line) , 4 ) , '.4f')
+# print("miss rate: {} (hit rate {})".format( miss_rate , hit_rate ))
+# print("replace: 0")
+# print("TRAFFIC (in words)")
+# print("demand fetch: {}".format(int( (block_size*number_of_misses)/(4) )))
+# print("copies back: 0")
+#
