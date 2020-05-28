@@ -102,6 +102,8 @@ class Cache_Set(LinkedList):
 
     def DeleteBlock(self,address,tag):
 
+        global copies_back
+        global replace
         self.occupied_size -= 1
 
         if self.head == None:
@@ -109,6 +111,10 @@ class Cache_Set(LinkedList):
         current = self.head
         while current != None:
             if current.address == address and current.tag == tag:
+
+                if current.dirty == 1:
+                    copies_back += int(block_size/4)
+                    # replace += 1
                 if current == self.head:
                     self.DeleteAtStart()
                 elif current == self.tail:
@@ -135,6 +141,7 @@ class Cache_Set(LinkedList):
             False
 
     def AddBlockToEnd(self,block):
+        global replace
         # global sizeOfSecondList
         if self.head is None:
             self.head = block
@@ -152,6 +159,7 @@ class Cache_Set(LinkedList):
             # print("two")
             return
         else:
+            replace += 1
             self.DeleteAtStart()
             self.tail.next = block
             block.previous = self.tail
@@ -159,6 +167,16 @@ class Cache_Set(LinkedList):
             # print(self.occupied_size)
             # print("three")
             return
+
+    def make_dirty(self,given_address,given_tag):
+        current = self.head
+        while current != None:
+            if current.address == given_address and current.tag == given_tag:
+                current.dirty = 1
+                return
+            current = current.next
+        return
+
 
 def create_cache(number_of_sets):
     Cache = []
@@ -175,23 +193,31 @@ def apply_LRU(cache_set,block):
 
 def answer_requests():
     if unified_or_separated == "0":
-        number_of_misses = answer_requests_unified()
-        return number_of_misses
+         answer_requests_unified()
+
+    remain_dirty_blocks()
 
 def answer_requests_unified():
 
-    number_of_misses = 0
+    global number_of_misses
 
     for request in requests_line:
-        if request[0] == '0':
-            number_of_misses += load_data(request)
+        if request[0] == '0' or request[0] == '2':
+            load_data(request)
         if request[0] == '1':
-            number_of_misses += store_data(request)
-    return number_of_misses
+            if write_policy == 'wb':
+                write_back(request)
+            else:
+                 write_through(request)
+    return
 
 def load_data(request):
 
-    number_of_misses = 0
+    global copies_back
+    global demand_fetch
+    global number_of_misses
+    global replace
+
     address_in_cache = int(int(request[1]) / block_size)
     set_number = int(address_in_cache % number_of_sets)
     tag = int(math.floor(address_in_cache / number_of_sets))
@@ -199,6 +225,7 @@ def load_data(request):
     valid = target_set.is_empty()
     if valid == False:
         number_of_misses = number_of_misses + 1
+        demand_fetch += int(block_size/4)
         new_block = Block(address_in_cache, tag)
         target_set.AddBlockToEnd(new_block)
     else:
@@ -208,22 +235,126 @@ def load_data(request):
             apply_LRU(target_set, block)
         else:
             number_of_misses += 1
+            demand_fetch += int(block_size / 4)
             new_block = Block(address_in_cache, tag)
             target_set.AddBlockToEnd(new_block)
     # target_set.Print()
     # print("******")
-    return number_of_misses
+    return
 
-def store_data(request):
-    pass
+def write_back(request):
+
+    global number_of_misses
+    if write_miss_policy == 'wa':
+         write_allocate(request)
+    else:
+         write_no_allocate(request)
+
+def write_through(request):
+    global number_of_misses
+    if write_miss_policy == 'wa':
+         write_allocate(request)
+    else:
+        pass
+
+def write_allocate(request):
+
+    global number_of_misses
+    global copies_back
+    global replace
+    global demand_fetch
+
+    address_in_cache = int(int(request[1]) / block_size)
+    set_number = int(address_in_cache % number_of_sets)
+    tag = int(math.floor(address_in_cache / number_of_sets))
+    target_set = Cache[set_number]
+    valid = target_set.is_empty()
+    if valid == False:
+        number_of_misses += 1
+        demand_fetch += int(block_size/4)
+        new_block = Block(address_in_cache, tag)
+        if write_policy == 'wb':
+            new_block.dirty = 1
+        else:
+            copies_back += 1
+        target_set.AddBlockToEnd(new_block)
+    else:
+        is_in_set = target_set.is_in_set(address_in_cache, tag)
+        if is_in_set == True:
+            # replace += 1
+            block = Block(address_in_cache, tag)
+            apply_LRU(target_set, block)
+            if write_policy == 'wb':
+                copies_back -= int(block_size / 4)
+            if write_policy == 'wb':
+                target_set.make_dirty(address_in_cache,tag)
+            else:
+                copies_back += 1
+        else:
+            number_of_misses += 1
+            demand_fetch += int(block_size / 4)
+            new_block = Block(address_in_cache, tag)
+            if write_policy == 'wb':
+                new_block.dirty = 1
+            else:
+                copies_back += 1
+            target_set.AddBlockToEnd(new_block)
+
+def write_no_allocate(request):
+
+    global number_of_misses
+    global copies_back
+    global replace
+    if write_policy != 'wb':
+        copies_back += 1
+
+    address_in_cache = int(int(request[1]) / block_size)
+    set_number = int(address_in_cache % number_of_sets)
+    tag = int(math.floor(address_in_cache / number_of_sets))
+    target_set = Cache[set_number]
+    valid = target_set.is_empty()
+    if valid == False:
+        number_of_misses += 1
+        if write_policy == 'wb':
+            copies_back += 1
+    else:
+        is_in_set = target_set.is_in_set(address_in_cache, tag)
+        if is_in_set == True:
+            # replace += 1
+            block = Block(address_in_cache, tag)
+            apply_LRU(target_set, block)
+            copies_back -= int(block_size/4)
+            target_set.make_dirty(address_in_cache, tag)
+        else:
+            number_of_misses += 1
+            if write_policy == 'wb':
+                copies_back += 1
+def remain_dirty_blocks():
+
+    global copies_back
+    for cache_set in Cache:
+        current = cache_set.head
+        while current != None:
+            if current.dirty == 1:
+                copies_back += int(block_size/4)
+            current = current.next
 
 number_of_sets = int((unified_size / block_size) / associativity)
-
+copies_back = 0
+number_of_misses = 0
+demand_fetch = 0
+replace = 0
 Cache = create_cache(number_of_sets)
 # for a in Cache:
 #     a.Print()
-number_of_misses = answer_requests()
+answer_requests()
+
+# print(demand_fetch)
 # print(number_of_misses)
+# print(copies_back)
+# print(replace)
+# print("***CACHE SETTINGS***")
+# print(requests_line)
 print("***CACHE SETTINGS***")
 print("Unified I- D-cache")
 print("Size: {}".format(unified_size))
@@ -250,8 +381,8 @@ print("misses: {}".format(number_of_misses))
 miss_rate = format(round(number_of_misses/len(requests_line) , 4 ) , '.4f')
 hit_rate = format(round(1 - number_of_misses/len(requests_line) , 4 ) , '.4f')
 print("miss rate: {} (hit rate {})".format( miss_rate , hit_rate ))
-print("replace: 0")
+print("replace: {}".format(replace))
 print("TRAFFIC (in words)")
-print("demand fetch: {}".format(int( (block_size*number_of_misses)/(4) )))
-print("copies back: 0")
+print("demand fetch: {}".format(int( demand_fetch )))
+print("copies back: {}".format(copies_back))
 

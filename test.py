@@ -9,4 +9,10 @@ t = round(4.446 , 2)
 # y = format(t, '.4f')
 # print(1 - int(y))
 # print(y)
-print(input().split())
+# print(input().split())
+def f() :
+    global g
+    g += 1
+g = 0
+f()
+print(g)
