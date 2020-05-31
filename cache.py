@@ -422,10 +422,10 @@ def write_no_allocate(temp_cache,request):
         is_in_set = target_set.is_in_set(address_in_cache, tag,'data')
         if is_in_set == True:
             # replace += 1
-            block = Block(address_in_cache, tag)
+            block = Block(address_in_cache, tag,'data')
+            apply_LRU(target_set, block)
             if write_policy == 'wb':
                 target_set.make_dirty(address_in_cache, tag)
-            apply_LRU(target_set, block)
             # copies_back -= int(block_size/4)
         else:
             number_of_misses_data += 1
