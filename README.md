@@ -23,4 +23,4 @@ The reference number specifies what type of memory reference is being performed 
   2 Instruction load reference
   
 Input format:
- ![alt text]https://github.com/zahrasalarian/Cache-Simulator/blob/master/Input_format.PNG
+ https://github.com/zahrasalarian/Cache-Simulator/blob/master/Input_format.PNG
