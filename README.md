@@ -25,4 +25,4 @@ The reference number specifies what type of memory reference is being performed 
 Input format:
  https://github.com/zahrasalarian/Cache-Simulator/blob/master/Input_format.PNG
  
-To see more examples check https://github.com/zahrasalarian/Cache-Simulator/tree/master/PubliclyAvailableTestCases/traces.
+To see more on input format check https://github.com/zahrasalarian/Cache-Simulator/tree/master/PubliclyAvailableTestCases/traces.
